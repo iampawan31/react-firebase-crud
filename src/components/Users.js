@@ -3,7 +3,7 @@ import User from './User'
 
 const Users = ({ users, setShowDeleteUserModal }) => {
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid md:grid-cols-2 gap-4 lg:grid-cols-3">
       {users &&
         users.map((user, index) => (
           <User

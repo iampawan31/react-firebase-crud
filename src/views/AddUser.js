@@ -1,18 +1,25 @@
-import { addDoc, collection } from 'firebase/firestore'
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { useState, useEffect } from 'react'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { db } from '../firebase-config'
 
-const AddUser = ({ handleClose }) => {
+const AddUser = ({ startLoader, completeLoader }) => {
+  let urlParams = useParams()
+  let navigate = useNavigate()
+
   const usersCollectionRef = collection(db, 'users')
+  const [userId, setUserId] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [age, setAge] = useState('')
   const [gender, setGender] = useState('')
+  const [city, setCity] = useState('')
+  const [country, setCountry] = useState('')
   const [bloodGroup, setBloodGroup] = useState('')
 
   const saveNewUser = async () => {
+    startLoader()
     await addDoc(usersCollectionRef, {
       firstName,
       lastName,
@@ -20,16 +27,84 @@ const AddUser = ({ handleClose }) => {
       age,
       gender,
       bloodGroup,
+    }).then(() => {
+      completeLoader()
+      navigate('/')
     })
   }
 
+  const updateUser = async () => {
+    startLoader()
+    const docRef = doc(db, 'users', userId)
+    const newFields = {
+      firstName,
+      lastName,
+      age,
+      gender,
+      bloodGroup,
+      city,
+      country,
+    }
+    await updateDoc(docRef, newFields).then(() => {
+      completeLoader()
+      navigate('/')
+    })
+  }
+
+  const processForm = () => {
+    if (userId) {
+      updateUser()
+    } else {
+      saveNewUser()
+    }
+  }
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const { userId } = urlParams
+
+      if (userId) {
+        startLoader()
+        const docRef = doc(db, 'users', userId)
+        const docSnap = await getDoc(docRef)
+
+        if (docSnap.exists()) {
+          setUserId(userId)
+          const {
+            firstName,
+            lastName,
+            email,
+            age,
+            gender,
+            bloodGroup,
+            city,
+            country,
+          } = docSnap.data()
+          setFirstName(firstName)
+          setLastName(lastName)
+          setEmail(email)
+          setAge(age)
+          setGender(gender)
+          setBloodGroup(bloodGroup)
+          setCity(city)
+          setCountry(country)
+          console.log(docSnap.data(), 35)
+          completeLoader()
+        }
+      }
+    }
+
+    getUserData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlParams])
+
   return (
-    <div className="bg-purple text-white h-screen">
+    <div className="bg-purple text-white min-h-screen h-full">
       <div className="container px-4 mx-auto">
-        <div className="min-h-full flex flex-col items-center justify-center">
+        <div className="min-h-screen h-full flex flex-col items-center justify-center">
           <div className="w-full max-w-xl bg-purple-dark mt-10 px-6 py-4 rounded-lg shadow-lg">
             <div className="text-center text-2xl font-bold mb-4">
-              Add New user
+              {userId ? 'Update User' : 'Add New user'}
             </div>
             <div className="mb-3">
               <label
@@ -40,6 +115,7 @@ const AddUser = ({ handleClose }) => {
               </label>
               <input
                 name="firstName"
+                value={firstName}
                 autoComplete="off"
                 className="border block w-full px-4 py-2 text-lg rounded-md text-black"
                 onChange={(e) => setFirstName(e.target.value)}
@@ -56,6 +132,7 @@ const AddUser = ({ handleClose }) => {
               </label>
               <input
                 name="lastName"
+                value={lastName}
                 autoComplete="off"
                 className="border block w-full px-4 py-2 text-lg rounded-md text-black"
                 onChange={(e) => setLastName(e.target.value)}
@@ -72,6 +149,7 @@ const AddUser = ({ handleClose }) => {
               </label>
               <input
                 name="email"
+                value={email}
                 autoComplete="off"
                 className="block w-full px-4 py-2 text-lg rounded-md text-black"
                 onChange={(e) => setEmail(e.target.value)}
@@ -80,12 +158,66 @@ const AddUser = ({ handleClose }) => {
               />
             </div>
             <div className="mb-3">
+              <label
+                htmlFor="city"
+                className="block text-sm font-medium text-white"
+              >
+                City
+              </label>
+              <input
+                name="city"
+                value={city}
+                autoComplete="off"
+                className="border block w-full px-4 py-2 text-lg rounded-md text-black"
+                onChange={(e) => setCity(e.target.value)}
+                type="text"
+                placeholder="new delhi"
+              />
+            </div>
+            <div className="mb-3">
+              <label
+                htmlFor="country"
+                className="block text-sm font-medium text-white"
+              >
+                Country
+              </label>
+              <input
+                name="country"
+                value={country}
+                autoComplete="off"
+                className="border block w-full px-4 py-2 text-lg rounded-md text-black"
+                onChange={(e) => setCountry(e.target.value)}
+                type="text"
+                placeholder="India"
+              />
+            </div>
+            <div className="mb-3">
+              <label
+                htmlFor="age"
+                className="block text-sm font-medium text-white"
+              >
+                Age
+              </label>
+              <input
+                name="age"
+                value={age}
+                autoComplete="off"
+                className="block w-full px-4 py-2 text-lg rounded-md text-black"
+                onChange={(e) => setAge(e.target.value)}
+                type="number"
+                placeholder="age"
+              />
+            </div>
+            <div className="mb-3">
+              <div className="block text-sm font-medium text-white">Gender</div>
               <div className="flex items-center">
                 <input
                   id="male"
                   name="push-notifications"
                   type="radio"
-                  onChange={() => setGender('Male')}
+                  value="Male"
+                  checked={gender.toLowerCase() === 'male'}
+                  onChange={() => setGender('male')}
                   className="focus:ring-blue h-4 w-4 text-blue border-gray-300"
                 />
                 <label
@@ -100,7 +232,9 @@ const AddUser = ({ handleClose }) => {
                   id="female"
                   name="push-notifications"
                   type="radio"
-                  onChange={() => setGender('Female')}
+                  value="Female"
+                  checked={gender.toLowerCase() === 'female'}
+                  onChange={() => setGender('female')}
                   className="focus:ring-blue h-4 w-4 text-blue border-gray-300"
                 />
                 <label
@@ -114,12 +248,13 @@ const AddUser = ({ handleClose }) => {
             <div className="mb-3">
               <label>Blood Group</label>
               <select
+                value={bloodGroup}
                 onChange={(e) => setBloodGroup(e.target.value)}
                 className="block w-full px-4 py-2 text-lg rounded-md text-black"
                 aria-label="Select blood group type"
               >
-                <option disabled selected>
-                  Blood Group
+                <option value="" disabled>
+                  Select Bloodgroup
                 </option>
                 <option value="O-">O-</option>
                 <option value="O+">O+</option>
@@ -133,18 +268,11 @@ const AddUser = ({ handleClose }) => {
             </div>
             <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <button
-                onClick={saveNewUser}
+                onClick={processForm}
                 type="button"
                 className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
               >
-                Save
-              </button>
-              <button
-                onClick={handleClose}
-                type="button"
-                className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-red text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-              >
-                Cancel
+                {userId ? 'Update' : 'Save'}
               </button>
             </div>
           </div>
@@ -152,7 +280,7 @@ const AddUser = ({ handleClose }) => {
             className="w-full md:w-auto px-4 py-1 text-white text-xl rounded-xl"
             to="/"
           >
-            &larr; Add User
+            &larr; Go to Homepage
           </Link>
         </div>
       </div>

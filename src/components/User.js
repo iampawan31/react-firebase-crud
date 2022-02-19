@@ -1,7 +1,8 @@
-import React from 'react'
+import { Link } from 'react-router-dom'
 
 const User = ({ user }) => {
   const {
+    id,
     firstName,
     lastName,
     age,
@@ -53,9 +54,12 @@ const User = ({ user }) => {
         </div>
       </div>
       <div className="flex">
-        <button className="bg-green hover:bg-opacity-80 transition w-full px-4 py-4 rounded-bl-xl">
+        <Link
+          className="bg-green hover:bg-opacity-80 transition w-full px-4 py-4 rounded-bl-xl text-center"
+          to={`/user/edit/${id}`}
+        >
           Edit
-        </button>
+        </Link>
         <button className="bg-red hover:bg-opacity-80 transition w-full px-4 py-4 rounded-br-xl">
           Delete
         </button>
