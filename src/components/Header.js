@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const Header = ({ setShowAddNewUserModal }) => {
+const Header = ({ refreshTable }) => {
   return (
     <div className="w-full md:w-auto inline-flex bg-opacity-50 bg-purple-dark px-8 py-4 rounded-xl shadow mb-10">
       <Link
@@ -12,7 +12,7 @@ const Header = ({ setShowAddNewUserModal }) => {
       </Link>
       <button
         className="bg-yellow w-full md:w-auto px-4 py-1 text-black rounded-r-xl"
-        onClick={() => setShowAddNewUserModal(true)}
+        onClick={refreshTable}
       >
         Refresh Table
       </button>

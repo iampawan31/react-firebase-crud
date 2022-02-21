@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react'
-import _ from 'lodash'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { doc, deleteDoc } from 'firebase/firestore'
@@ -7,21 +5,6 @@ import { db } from '../firebase-config'
 
 const Users = ({ users, getUpdatedUsers }) => {
   const MySwal = withReactContent(Swal)
-  const [tableColumns, setTableColumns] = useState([])
-
-  useEffect(() => {
-    if (users && users.length > 0) {
-      setTableColumns(
-        _.remove(_.sortBy(Object.keys(users[0])), (n) => {
-          return n !== 'id'
-        })
-      )
-    }
-
-    return () => {
-      setTableColumns([])
-    }
-  }, [users])
 
   const deleteUser = (id) => {
     MySwal.fire({
