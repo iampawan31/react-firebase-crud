@@ -26,7 +26,11 @@ const Home = ({ startLoader, completeLoader }) => {
     <div className="bg-purple h-full min-h-screen pb-20 md:pb-32">
       <div className="container px-4 mx-auto py-10 md:py-20">
         <Header />
-        <Users tableColumns={tableColumns} users={users} />
+        <Users
+          tableColumns={tableColumns}
+          getUpdatedUsers={getUsers}
+          users={users}
+        />
         {/* <DeleteUser
       show={showDeleteUserModal}
       handleClose={() => setShowDeleteUserModal(false)}

@@ -1,5 +1,4 @@
 import { useRef } from 'react'
-
 import { Routes, Route } from 'react-router-dom'
 import Home from './views/Home'
 import AddUser from './views/AddUser'

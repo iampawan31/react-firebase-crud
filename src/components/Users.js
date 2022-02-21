@@ -1,7 +1,7 @@
 import React from 'react'
 import User from './User'
 
-const Users = ({ users, setShowDeleteUserModal }) => {
+const Users = ({ users, setShowDeleteUserModal, getUpdatedUsers }) => {
   return (
     <div className="grid md:grid-cols-2 gap-4 lg:grid-cols-3">
       {users &&
@@ -9,6 +9,7 @@ const Users = ({ users, setShowDeleteUserModal }) => {
           <User
             key={index}
             user={user}
+            getUpdatedUsers={getUpdatedUsers}
             setShowDeleteUserModal={setShowDeleteUserModal}
           />
         ))}
