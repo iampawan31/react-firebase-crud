@@ -29,7 +29,7 @@ const App = () => {
           }
         />
         <Route
-          path="/add-user"
+          path="/users/new"
           element={
             <AddUser
               startLoader={startLoader}
@@ -38,7 +38,7 @@ const App = () => {
           }
         />
         <Route
-          path="/user/edit/:userId"
+          path="/users/edit/:userId"
           element={
             <AddUser
               startLoader={startLoader}

@@ -2,6 +2,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { doc, deleteDoc } from 'firebase/firestore'
 import { db } from '../firebase-config'
+import { Link } from 'react-router-dom'
 
 const Users = ({ users, getUpdatedUsers }) => {
   const MySwal = withReactContent(Swal)
@@ -98,9 +99,12 @@ const Users = ({ users, getUpdatedUsers }) => {
                 {user.country}
               </td>
               <td className="border border-gray-light px-1 py-1 text-right">
-                <button className="bg-green text-sm text-white px-1 py-1 rounded mr-2 hover:bg-opacity-80 transition">
+                <Link
+                  to={`/users/edit/${user.id}`}
+                  className="bg-green text-sm text-white px-1 py-1 rounded mr-2 hover:bg-opacity-80 transition"
+                >
                   Edit
-                </button>
+                </Link>
                 <button
                   onClick={() => deleteUser(user.id)}
                   className="bg-red text-sm text-white px-1 py-1 rounded hover:bg-opacity-80 transition"

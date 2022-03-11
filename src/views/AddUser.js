@@ -23,10 +23,12 @@ const AddUser = ({ startLoader, completeLoader }) => {
     await addDoc(usersCollectionRef, {
       firstName,
       lastName,
-      email,
       age,
       gender,
       bloodGroup,
+      city,
+      country,
+      email,
     }).then(() => {
       completeLoader()
       navigate('/')
@@ -44,6 +46,7 @@ const AddUser = ({ startLoader, completeLoader }) => {
       bloodGroup,
       city,
       country,
+      email,
     }
     await updateDoc(docRef, newFields).then(() => {
       completeLoader()
@@ -51,11 +54,11 @@ const AddUser = ({ startLoader, completeLoader }) => {
     })
   }
 
-  const processForm = () => {
+  const processForm = async () => {
     if (userId) {
-      updateUser()
+      await updateUser()
     } else {
-      saveNewUser()
+      await saveNewUser()
     }
   }
 
